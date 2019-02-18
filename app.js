@@ -45,10 +45,9 @@ app.use(validateRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res) {
-  res.status(404)
-    .send({
-      msg: 'Not Found'
-    })
+  res.status(404).send({
+    msg: 'Not Found'
+  })
 })
 
 module.exports = app

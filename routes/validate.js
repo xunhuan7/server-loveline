@@ -11,18 +11,24 @@ router.route('/register')
       ...req.body,
       created: Date.now()
     })
-    User.findOne({ username: res.locals.username }, (err, result) => {
+    User.findOne({ username: req.body.username }, (err, result) => {
       if (err) {
         return err
       }
-      user.save((err, result) => {
-        if (err) {
-          throw err
-        }
-        res.send({
-          msg: 'Register succeed'
+      if (result) {
+        res.status(500).send({
+          msg: 'User exists'
         })
-      })
+      } else {
+        user.save((err, result) => {
+          if (err) {
+            throw err
+          }
+          res.status(200).send({
+            msg: 'Register succeed'
+          })
+        })
+      }
     })
   })
 
@@ -45,11 +51,10 @@ router.route('/login')
           const token = jwt.sign({ username: result.username }, 'secret', {
             expiresIn: 7 * 24 * 60 * 60
           })
-          res.status(200)
-            .send({
-              msg: 'Login succeed',
-              tokenId: token
-            })
+          res.status(200).send({
+            msg: 'Login succeed',
+            tokenId: token
+          })
         }
       }
     })
