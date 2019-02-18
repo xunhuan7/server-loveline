@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const jwt = require('jsonwebtoken')
+
 const User = require('../models/user')
 
 router.route('/register')
@@ -9,19 +11,24 @@ router.route('/register')
       ...req.body,
       created: Date.now()
     })
-    user.save((err, result) => {
+    User.findOne({ username: res.locals.username }, (err, result) => {
       if (err) {
         return err
       }
-      res.send({
-        msg: 'Register succeed'
+      user.save((err, result) => {
+        if (err) {
+          throw err
+        }
+        res.send({
+          msg: 'Register succeed'
+        })
       })
     })
   })
 
 router.route('/login')
   .post((req, res) => {
-    User.findOne({ ...req.body }, (err, result) => {
+    User.findOne({ username: req.body.username }, (err, result) => {
       if (err) {
         return err
       }
@@ -29,14 +36,21 @@ router.route('/login')
         res.status(500).send({
           msg: 'User does not exist'
         })
-      } else {
-        res.status(200)
-          .cookie('token', 'tokenID', {
-            expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-           })
-          .send({
-            msg: 'Login succeed'
+      } else if (result) {
+        if (result.password !== req.body.password) {
+          res.status(500).send({
+            msg: 'Password is incorrect'
           })
+        } else {
+          const token = jwt.sign({ username: result.username }, 'secret', {
+            expiresIn: 7 * 24 * 60 * 60
+          })
+          res.status(200)
+            .send({
+              msg: 'Login succeed',
+              tokenId: token
+            })
+        }
       }
     })
   })
