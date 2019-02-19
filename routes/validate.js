@@ -20,7 +20,7 @@ router.route('/register')
           msg: 'User exists'
         })
       } else {
-        user.save((err, result) => {
+        user.save((err) => {
           if (err) {
             throw err
           }

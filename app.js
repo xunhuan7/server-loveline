@@ -13,24 +13,29 @@ const validateRouter = require('./routes/validate')
 const app = express()
 
 // JWT authentication
-app.use(function (err, req, res, next) {
+app.use(function (req, res, next) {
   const unless = ['/register', '/login']
+  let isNeedVerify = true
   unless.forEach(path => {
-    if (req.originalUrl.indexOf(path) >= 0) {
-      return next()
+    if (req.originalUrl.indexOf(path) > -1) {
+      isNeedVerify = false
     }
   })
 
-  jwt.verify(req.headers['authorization'], 'secret', function (err, decode) {
-    if (err) {
-      res.status(401).send({
-        msg: 'Invalid token...'
-      })
-    } else {
-      res.locals.username = decode.username
-      next()
-    }
-  })
+  if (isNeedVerify) {
+    jwt.verify(req.headers['authorization'], 'secret', function (err, decode) {
+      if (err) {
+        res.status(401).send({
+          msg: 'Invalid token...'
+        })
+      } else {
+        res.locals.username = decode.username
+        return next()
+      }
+    })
+  } else {
+    next()
+  }
 })
 
 // Apply middleware
