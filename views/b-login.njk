@@ -1,0 +1,36 @@
+{% extends 'b-base.njk' %}
+{% block content %}
+
+<div id="login">
+  <div class="ui middle aligned center aligned grid form-container">
+    <div class="column">
+      <h3 class="ui teal header">
+        <div class="content">
+          Blog Management System
+        </div>
+      </h3>
+      <form class="ui small form error" action="/login" method="post">
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <input type="text" name="email" placeholder="E-mail" required>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <input type="password" name="password" placeholder="Password" required>
+          </div>
+        </div>
+        {% if status === 0 %}
+        <div class="ui error message">
+          <p>{{ message }}</p>
+        </div>
+        {% endif %}
+        <button class="ui fluid teal submit button" @click.prevent="login">Login</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -12,6 +12,7 @@ const jwt = require('jsonwebtoken')
 // Custom controllers
 const index = require('./routes/index')
 const validateRouter = require('./routes/validate')
+const articleRouter = require('./routes/article')
 
 const app = express()
 app.use(lessMiddleware(__dirname + '/public', { force: true }))
@@ -58,6 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 // Apply custom controllers
 app.use(index)
 app.use(validateRouter)
+app.use(articleRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res) {

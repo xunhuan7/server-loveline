@@ -1,0 +1,21 @@
+{% extends 'b-common.njk' %}
+{% block wrap %}
+
+<div id="article-list">
+  <h1>文章列表</h1>
+</div>
+
+<script>
+  new Vue({
+    el: '#article-list',
+    mounted() {
+      this.bindEvents()
+    },
+    methods: {
+      bindEvents() {
+        $('.ui.dropdown').dropdown({ clearable: true })
+      }
+    }
+  })
+</script>
+{% endblock %}
