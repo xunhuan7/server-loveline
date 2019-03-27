@@ -1,0 +1,49 @@
+{% extends 'b-common.njk' %}
+{% block wrap %}
+
+<div id="new-article">
+  <form class="ui form">
+    <div class="field">
+      <label>标题</label>
+      <input type="text" name="title">
+    </div>
+    <div class="field">
+      <label>摘要</label>
+      <textarea rows="4" name="summary"></textarea>
+    </div>
+    <div class="inline field">
+      <div class="ui toggle checkbox">
+        <input type="checkbox">
+        <label>是否直接推送</label>
+      </div>
+    </div>
+    <div class="required field">
+      <label>分类</label>
+      <select name="tags" multiple class="ui fluid dropdown">
+        {% for item in types %}
+        <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="required field">
+      <label>正文</label>
+      <textarea id="content" name="content"></textarea>
+    </div>
+    <button type="submit" class="ui primary button">保存</button>
+  </form>
+</div>
+
+<script>
+  new Vue({
+    el: '#new-article',
+    mounted() {
+      this.bindEvents()
+    },
+    methods: {
+      bindEvents() {
+        tinymce.init({ selector: '#content' })
+      }
+    }
+  })
+</script>
+{% endblock %}
