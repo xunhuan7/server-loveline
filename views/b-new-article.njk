@@ -2,24 +2,24 @@
 {% block wrap %}
 
 <div id="new-article">
-  <form class="ui form">
+  <div class="ui form">
     <div class="field">
       <label>标题</label>
-      <input type="text" name="title">
+      <input type="text" v-model="title">
     </div>
     <div class="field">
       <label>摘要</label>
-      <textarea rows="4" name="summary"></textarea>
+      <textarea rows="4" v-model="summary"></textarea>
     </div>
     <div class="inline field">
       <div class="ui toggle checkbox">
-        <input type="checkbox">
+        <input type="checkbox" v-model="status">
         <label>是否直接推送</label>
       </div>
     </div>
     <div class="required field">
       <label>分类</label>
-      <select name="tags" multiple class="ui fluid dropdown">
+      <select v-model="tags" multiple class="ui fluid dropdown">
         {% for item in types %}
         <option value="{{ item }}">{{ item }}</option>
         {% endfor %}
@@ -27,21 +27,49 @@
     </div>
     <div class="required field">
       <label>正文</label>
-      <textarea id="content" name="content"></textarea>
+      <mavon-editor v-model="content"/>
     </div>
-    <button type="submit" class="ui primary button">保存</button>
-  </form>
+    <button @click="save" class="fluid ui primary button">保存</button>
+  </div>
 </div>
 
 <script>
   new Vue({
+    delimiters: ['${', '}'],
     el: '#new-article',
-    mounted() {
+    data: {
+      title: '',
+      summary: '',
+      status: false,
+      tags: [],
+      content: '',
+    },
+    mounted: function () {
       this.bindEvents()
     },
     methods: {
-      bindEvents() {
-        tinymce.init({ selector: '#content' })
+      bindEvents: function () {
+      },
+      save: function () {
+        var params = {
+          title: this.title,
+          summary: this.summary,
+          status: this.status,
+          tags: this.tags,
+          content: this.content,
+        }
+        if(params.tags.length === 0){
+          return alert('分类不能为空')
+        }
+        if(!params.content){
+          return alert('正文不能为空')
+        }
+
+        axios.post('/newArticle', params).then(function () {
+          alert('创建成功')
+        }).catch(function (error) {
+          alert('创建失败' + error.response.data.msg)
+        })
       }
     }
   })

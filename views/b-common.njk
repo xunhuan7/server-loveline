@@ -1,54 +1,53 @@
 {% extends 'b-base.njk' %}
 {% block content %}
 
-<div id="common">
-  <!-- s:顶部导航栏 -->
-  <div class="ui container">
-    <div class="ui secondary pointing menu">
-      <a class="item active" href="/articleList">
-        <i class="list ul icon"></i>文章列表
-      </a>
-      <a class="item" href="/tempArticleList">
-        <i class="hand point up outline icon"></i>暂存库
-      </a>
-      <a class="item">
-        <i class="edit outline icon"></i>写文章
-      </a>
-      <a class="item">
-        <i class="chart bar icon"></i>数据统计
-      </a>
-      <div class="right menu">
-        <div class="item">
-          <div class="ui search">
-            <div class="ui mini icon input">
-              <input class="prompt" type="text" placeholder="Search...">
-              <i class="search icon"></i>
-            </div>
-            <div class="results"></div>
+<!-- s:顶部导航栏 -->
+<div id="header" class="ui container">
+  <div class="ui secondary pointing menu">
+    <a class="item active" href="/articleList">
+      <i class="list ul icon"></i>文章列表
+    </a>
+    <a class="item" href="/tempArticleList">
+      <i class="hand point up outline icon"></i>暂存库
+    </a>
+    <a class="item">
+      <i class="edit outline icon"></i>写文章
+    </a>
+    <a class="item">
+      <i class="chart bar icon"></i>数据统计
+    </a>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui search">
+          <div class="ui mini icon input">
+            <input class="prompt" type="text" placeholder="Search...">
+            <i class="search icon"></i>
           </div>
+          <div class="results"></div>
         </div>
-        <div class="ui dropdown item">
-          <img class="ui avatar image" src="https://semantic-ui.com/images/avatar/small/elliot.jpg">
-          <div class="menu">
-            <div class="item" @click="logout">
-              <i class="sign-out icon"></i>登出
-            </div>
+      </div>
+      <div class="ui dropdown item">
+        <img class="ui avatar image" src="https://semantic-ui.com/images/avatar/small/elliot.jpg">
+        <div class="menu">
+          <div class="item" @click="logout">
+            <i class="sign-out icon"></i>登出
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- e:顶部导航栏 -->
-  <!-- s:内容区 -->
-  <div class="ui container" style="padding: 1em">
-    {% block wrap %}{% endblock %}
-  </div>
-  <!-- e:内容区 -->
 </div>
+<!-- e:顶部导航栏 -->
+
+<!-- s:内容区 -->
+<div class="ui container" style="padding: 1em">
+  {% block wrap %}{% endblock %}
+</div>
+<!-- e:内容区 -->
 
 <script>
   new Vue({
-    el: '#common',
+    el: '#header',
     mounted() {
       this.bindEvents()
     },

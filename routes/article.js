@@ -16,7 +16,7 @@ router.route('/newArticle')
   })
   .post((req, res) => {
     const { tags = [], content = '' } = req.body
-    console.log('ss',req.body,'ee')
+    console.log('ss', req.body, 'ee')
     if (tags.length === 0) {
       return res.status(500).send({
         msg: '分类为必填字段'
@@ -33,7 +33,7 @@ router.route('/newArticle')
       updated: Date.now(),
     })
 
-    article.save(err=>{
+    article.save(err => {
       if (err) {
         throw err
       }
@@ -43,9 +43,14 @@ router.route('/newArticle')
     })
   })
 
-router.route('/articleList')
+router.route('/tempArticleList')
   .get((req, res) => {
-    res.render('b-article-list')
+    Article.find({}, (err, result) => {
+      console.log(result)
+      res.render('b-temp-article-list', {
+        data: result
+      })
+    })
   })
   .post((req, res) => {
     Article.findOne({ username: req.body.email }, (err, result) => {
@@ -72,9 +77,8 @@ router.route('/articleList')
     })
   })
 
-router.route('/tempArticleList')
+router.route('/articleList')
   .get((req, res) => {
-    res.render('b-temp-article-list')
   })
   .post((req, res) => {
     Article.findOne({ username: req.body.email }, (err, result) => {

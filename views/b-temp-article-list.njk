@@ -10,35 +10,41 @@
   <table class="ui celled striped table">
     <thead>
     <tr>
-      <th colspan="3">Temporary storage</th>
+      <th colspan="5">Temporary storage</th>
     </tr>
     </thead>
     <tbody>
+    {% for item in data %}
     <tr>
-      <td class="collapsing"><i class="folder icon"></i> node_modules</td>
-      <td>Initial commit</td>
-      <td class="right aligned collapsing">10 hours ago</td>
+      <td class="collapsing"><i class="folder icon"></i>
+        {{ item.title }}
+      </td>
+      <td>
+        {{ item.summary }}
+      </td>
+      <td>
+        <div class="ui tag labels">
+          {% for tag in item.tags %}
+          <a class="ui label">{{ tag }}</a>
+          {% endfor %}
+        </div>
+      </td>
+      <!--<td>-->
+      <!--<mavon-editor :toolbars="toolbars"-->
+      <!--:subfield="false"-->
+      <!--:editable="false"-->
+      <!--:scrollStyle="true"-->
+      <!--defaultOpen="preview"-->
+      <!--value="{{ item.content }}"/>-->
+      <!--</td>-->
+      <td>
+        {{ item.created }}
+      </td>
+      <td>
+        {{ item.updated }}
+      </td>
     </tr>
-    <tr>
-      <td><i class="folder icon"></i> test</td>
-      <td>Initial commit</td>
-      <td class="right aligned">10 hours ago</td>
-    </tr>
-    <tr>
-      <td><i class="folder icon"></i> build</td>
-      <td>Initial commit</td>
-      <td class="right aligned">10 hours ago</td>
-    </tr>
-    <tr>
-      <td><i class="file outline icon"></i> package.json</td>
-      <td>Initial commit</td>
-      <td class="right aligned">10 hours ago</td>
-    </tr>
-    <tr>
-      <td><i class="file outline icon"></i> Gruntfile.js</td>
-      <td>Initial commit</td>
-      <td class="right aligned">10 hours ago</td>
-    </tr>
+    {% endfor %}
     </tbody>
   </table>
 </div>
@@ -46,6 +52,11 @@
 <script>
   new Vue({
     el: '#temp-article-list',
+    computed: {
+      toolbars() {
+        return { preview: true, subfield: false }
+      }
+    },
     mounted() {
       this.bindEvents()
     },

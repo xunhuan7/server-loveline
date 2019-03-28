@@ -3,12 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mavon-editor@2.7.3/dist/css/index.css">
   <link rel="stylesheet" href="/styles/b-all.css">
   <title>Jayden</title>
   <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/tinymce@5.0.3/tinymce.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.18.0/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.0/src/js.cookie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mavon-editor@2.7.3/dist/mavon-editor.min.js"></script>
+  <script>
+    Vue.use(window['mavon-editor'])
+  </script>
 </head>
 <body>
 {% block content %}{% endblock %}
