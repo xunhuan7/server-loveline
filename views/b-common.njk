@@ -2,15 +2,12 @@
 {% block content %}
 
 <!-- s:顶部导航栏 -->
-<div id="header" class="ui container">
+<div id="header">
   <div class="ui secondary pointing menu">
-    <a class="item active" href="/articleList">
+    <a class="item {% if activeNav.indexOf('articleList') > -1 %}active{% endif %}" href="/articleList">
       <i class="list ul icon"></i>文章列表
     </a>
-    <a class="item" href="/tempArticleList">
-      <i class="hand point up outline icon"></i>暂存库
-    </a>
-    <a class="item">
+    <a class="item {% if activeNav === '/newArticle' %}active{% endif %}" href="/newArticle">
       <i class="edit outline icon"></i>写文章
     </a>
     <a class="item">
@@ -40,7 +37,7 @@
 <!-- e:顶部导航栏 -->
 
 <!-- s:内容区 -->
-<div class="ui container" style="padding: 1em">
+<div style="padding: 1em">
   {% block wrap %}{% endblock %}
 </div>
 <!-- e:内容区 -->

@@ -3,6 +3,14 @@
 
 <div id="new-article">
   <div class="ui form">
+    <div class="required field">
+      <label>分类</label>
+      <select v-model="tags" multiple class="ui fluid dropdown">
+        {% for item in types %}
+        <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select>
+    </div>
     <div class="field">
       <label>标题</label>
       <input type="text" v-model="title">
@@ -13,19 +21,11 @@
     </div>
     <div class="inline field">
       <div class="ui toggle checkbox">
-        <input type="checkbox" v-model="status">
+        <input type="checkbox" v-model="online">
         <label>是否直接推送</label>
       </div>
     </div>
-    <div class="required field">
-      <label>分类</label>
-      <select v-model="tags" multiple class="ui fluid dropdown">
-        {% for item in types %}
-        <option value="{{ item }}">{{ item }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="required field">
+    <div class="required field" id="content">
       <label>正文</label>
       <mavon-editor v-model="content"/>
     </div>
@@ -40,7 +40,7 @@
     data: {
       title: '',
       summary: '',
-      status: false,
+      online: false,
       tags: [],
       content: '',
     },
@@ -54,7 +54,7 @@
         var params = {
           title: this.title,
           summary: this.summary,
-          status: this.status,
+          online: this.online,
           tags: this.tags,
           content: this.content,
         }
@@ -66,7 +66,7 @@
         }
 
         axios.post('/newArticle', params).then(function () {
-          alert('创建成功')
+          window.location.href = '/articleList'
         }).catch(function (error) {
           alert('创建失败' + error.response.data.msg)
         })

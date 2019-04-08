@@ -2,12 +2,81 @@
 {% block wrap %}
 
 <div id="article-list">
-  <h1>文章列表</h1>
+  <div class="write-article">
+    <a class="ui circular primary icon button" href="/newArticle">
+      <i class="plus icon"></i>
+    </a>
+  </div>
+  <table class="ui very basic collapsing compact celled table">
+    <thead>
+    <tr>
+      <th>缩略图</th>
+      <th class="ten wide">标题和摘要</th>
+      <th class="one wide">标签</th>
+      <th class="two wide">创建时间</th>
+      <th class="two wide">最后更新时间</th>
+      <th class="two wide">操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in data %}
+    <tr class="{% if item.online === false %}warning{% endif %}">
+      <td><img src="{{ item.thumbnail }}"/></td>
+      <td class="collapsing">
+        <h5>
+          {% if item.title %}
+          {{ item.title }}
+          {% else %}
+          暂无标题
+          {% endif %}
+        </h5>
+        <p class="summary-paragraph">
+          {% if item.summary %}
+          {{ item.summary }}
+          {% else %}
+          暂无摘要
+          {% endif %}
+        </p>
+      </td>
+      <td>
+        {% for tag in item.tags %}
+        <p>
+        <div class="ui mini label">{{ tag }}</div>
+        </p>
+        {% endfor %}
+      </td>
+      <!--<td>-->
+      <!--<mavon-editor :toolbars="toolbars"-->
+      <!--:subfield="false"-->
+      <!--:editable="false"-->
+      <!--:scrollStyle="true"-->
+      <!--defaultOpen="preview"-->
+      <!--value="{{ item.content }}"/>-->
+      <!--</td>-->
+      <td>{{ item.created_at }}</td>
+      <td>{{ item.updated_at }}</td>
+      <td>
+        <a class="circular ui compact icon button" href="/articleList/{{ item.id }}">
+          <i class="blue pencil alternate icon"></i>
+        </a>
+        <button class="circular ui compact icon button" data-id="{{ item.id }}">
+          <i class="red trash alternate outline icon"></i>
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 <script>
   new Vue({
     el: '#article-list',
+    computed: {
+      toolbars() {
+        return { preview: true, subfield: false }
+      }
+    },
     mounted() {
       this.bindEvents()
     },

@@ -23,9 +23,41 @@
   }
 }
 
-#temp-article-list {
+#new-article {
+  #content textarea:not([rows]) {
+    height: 100%;
+    max-height: unset;
+    font-size: 16px !important;
+    line-height: 1.4285em !important;
+  }
+}
+
+#article-list {
+  table {
+    width: 100%;
+
+    img {
+      object-fit: cover;
+      width: 200px;
+      height: 130px;
+    }
+  }
+
   .write-article {
     display: flex;
     justify-content: flex-end;
+  }
+
+  .summary-paragraph {
+    white-space: normal;
+  }
+}
+
+#article-detail {
+  #content textarea:not([rows]) {
+    height: 100%;
+    max-height: unset;
+    font-size: 16px !important;
+    line-height: 1.4285em !important;
   }
 }

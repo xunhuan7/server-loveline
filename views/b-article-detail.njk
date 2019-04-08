@@ -1,0 +1,75 @@
+{% extends 'b-common.njk' %}
+{% block wrap %}
+
+<div id="article-detail">
+  <div class="ui form">
+    <div class="required field">
+      <label>分类</label>
+      <select v-model="tags" multiple class="ui fluid dropdown">
+        {% for item in types %}
+        <option value="{{ item }}">{{ item }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="field">
+      <label>标题</label>
+      <input type="text" v-model="title">
+    </div>
+    <div class="field">
+      <label>摘要</label>
+      <textarea rows="4" v-model="summary"></textarea>
+    </div>
+    <div class="inline field">
+      <div class="ui toggle checkbox">
+        <input type="checkbox" v-model="online">
+        <label>是否标记为线上</label>
+      </div>
+    </div>
+    <div class="required field" id="content">
+      <label>正文</label>
+      <mavon-editor v-model="content"/>
+    </div>
+    <button @click="save" class="fluid ui primary button">保存</button>
+  </div>
+</div>
+
+<script>
+  var id = {{ id | dump | safe }}
+  var articleDetail = {{ data | dump | safe }}
+</script>
+<script>
+  new Vue({
+    delimiters: ['${', '}'],
+    el: '#article-detail',
+    data: articleDetail,
+    mounted: function () {
+      this.bindEvents()
+    },
+    methods: {
+      bindEvents: function () {
+      },
+      save: function () {
+        var params = {
+          title: this.title,
+          summary: this.summary,
+          online: this.online,
+          tags: this.tags,
+          content: this.content,
+        }
+        if(params.tags.length === 0){
+          return alert('分类不能为空')
+        }
+        if(!params.content){
+          return alert('正文不能为空')
+        }
+
+        axios.put('/articleList/'+id, params).then(function () {
+          window.location.href = '/articleList'
+        }).catch(function (error) {
+          alert('更新失败：' + error.response.data.msg)
+        })
+      }
+    }
+  })
+</script>
+{% endblock %}

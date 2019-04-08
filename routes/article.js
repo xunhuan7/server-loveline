@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-const jwt = require('jsonwebtoken')
+const moment = require('moment')
 
 const Article = require('../models/article')
 
@@ -10,13 +10,10 @@ router.route('/newArticle')
     const types = [
       '前端开发', 'Node.js', 'Java', '运维', '工具', '读书笔记', '杂谈'
     ]
-    res.render('b-new-article', {
-      types
-    })
+    res.render('b-article-new', { activeNav: req.path, types })
   })
   .post((req, res) => {
     const { tags = [], content = '' } = req.body
-    console.log('ss', req.body, 'ee')
     if (tags.length === 0) {
       return res.status(500).send({
         msg: '分类为必填字段'
@@ -43,65 +40,45 @@ router.route('/newArticle')
     })
   })
 
-router.route('/tempArticleList')
+router.route('/articleList')
   .get((req, res) => {
-    Article.find({}, (err, result) => {
-      console.log(result)
-      res.render('b-temp-article-list', {
+    Article.findAllArticles((err, result) => {
+      result = result.map((item) => {
+        item.created_at = moment(item.created).format('YYYY-MM-DD HH:MM')
+        item.updated_at = moment(item.updated).format('YYYY-MM-DD HH:MM')
+        return item
+      })
+      res.render('b-article-list', {
+        activeNav: req.path,
         data: result
       })
     })
   })
-  .post((req, res) => {
-    Article.findOne({ username: req.body.email }, (err, result) => {
-      if (result === null) {
-        return res.render('b-login', {
-          status: 0,
-          message: 'User does not exist'
-        })
-      }
-      if (result) {
-        if (result.password !== req.body.password) {
-          return res.render('b-login', {
-            status: 0,
-            message: 'Password is incorrect'
-          })
-        }
-        const token = jwt.sign({ username: result.username }, 'secret', {
-          expiresIn: 7 * 24 * 60 * 60
-        })
-        res.cookie('token', token, {
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60)
-        }).redirect('/categoriesList')
-      }
+
+router.route('/articleList/:id')
+  .get((req, res) => {
+    const types = [
+      '前端开发', 'Node.js', 'Java', '运维', '工具', '读书笔记', '杂谈'
+    ]
+    Article.findById(req.params.id, (err, result) => {
+      result.created_at = moment(result.created).format('YYYY-MM-DD HH:MM')
+      result.updated_at = moment(result.updated).format('YYYY-MM-DD HH:MM')
+      res.render('b-article-detail', {
+        activeNav: req.path,
+        types,
+        id: req.params.id,
+        data: result
+      })
     })
   })
-
-router.route('/articleList')
-  .get((req, res) => {
-  })
-  .post((req, res) => {
-    Article.findOne({ username: req.body.email }, (err, result) => {
-      if (result === null) {
-        return res.render('b-login', {
-          status: 0,
-          message: 'User does not exist'
-        })
+  .put((req, res) => {
+    Article.updateOne({ _id: req.params.id }, req.body, function (err, result) {
+      if(err){
+        throw err
       }
-      if (result) {
-        if (result.password !== req.body.password) {
-          return res.render('b-login', {
-            status: 0,
-            message: 'Password is incorrect'
-          })
-        }
-        const token = jwt.sign({ username: result.username }, 'secret', {
-          expiresIn: 7 * 24 * 60 * 60
-        })
-        res.cookie('token', token, {
-          expires: new Date(Date.now() + 7 * 24 * 60 * 60)
-        }).redirect('/categoriesList')
-      }
+      res.status(200).send({
+        msg: 'Update successful '
+      })
     })
   })
 

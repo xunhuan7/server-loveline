@@ -12,6 +12,7 @@
     "express": "~4.16.0",
     "jsonwebtoken": "^8.4.0",
     "less-middleware": "^3.1.0",
+    "moment": "^2.24.0",
     "mongoose": "^5.4.9",
     "morgan": "~1.9.0",
     "nunjucks": "^3.2.0"
