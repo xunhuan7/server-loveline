@@ -27,7 +27,7 @@ router.route('/newArticle')
     const article = new Article({
       ...req.body,
       created: Date.now(),
-      updated: Date.now(),
+      updated: Date.now()
     })
 
     article.save(err => {
@@ -43,14 +43,16 @@ router.route('/newArticle')
 router.route('/articleList')
   .get((req, res) => {
     Article.findAllArticles((err, result) => {
-      result = result.map((item) => {
-        item.created_at = moment(item.created).format('YYYY-MM-DD HH:MM')
-        item.updated_at = moment(item.updated).format('YYYY-MM-DD HH:MM')
+      let data = result.map(item => {
+        Object.assign(item, {
+          created_at: moment(new Date(item.created)).format('YYYY-MM-DD hh:mm'),
+          updated_at: moment(new Date(item.updated)).format('YYYY-MM-DD hh:mm')
+        })
         return item
       })
       res.render('b-article-list', {
         activeNav: req.path,
-        data: result
+        data: data
       })
     })
   })
@@ -63,7 +65,7 @@ router.route('/articleList/:id')
     Article.findById(req.params.id, (err, result) => {
       result.created_at = moment(result.created).format('YYYY-MM-DD HH:MM')
       result.updated_at = moment(result.updated).format('YYYY-MM-DD HH:MM')
-      res.render('b-article-detail', {
+      res.render('b-article-edit', {
         activeNav: req.path,
         types,
         id: req.params.id,
@@ -72,8 +74,11 @@ router.route('/articleList/:id')
     })
   })
   .put((req, res) => {
-    Article.updateOne({ _id: req.params.id }, req.body, function (err, result) {
-      if(err){
+    Article.updateOne({ _id: req.params.id }, {
+      ...req.body,
+      updated: Date.now()
+    }, function (err, result) {
+      if (err) {
         throw err
       }
       res.status(200).send({
