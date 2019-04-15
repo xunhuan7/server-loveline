@@ -4,6 +4,7 @@ const router = express.Router()
 const moment = require('moment')
 
 const Article = require('../models/article')
+const helper = require('../util/helper')
 
 router.route('/newArticle')
   .get((req, res) => {
@@ -41,36 +42,27 @@ router.route('/newArticle')
   })
 
 router.route('/articleList')
-  .get((req, res) => {
-    Article.findAllArticles((err, result) => {
-      let data = result.map(item => {
-        Object.assign(item, {
-          created_at: moment(new Date(item.created)).format('YYYY-MM-DD hh:mm'),
-          updated_at: moment(new Date(item.updated)).format('YYYY-MM-DD hh:mm')
-        })
-        return item
-      })
-      res.render('b-article-list', {
-        activeNav: req.path,
-        data: data
-      })
+  .get(async (req, res) => {
+    req.query = Object.assign({ page: 1, pageSize: 2 }, req.query)
+    const result = await Article.filterArticles(req.query)
+    result.list.map(item => {
+      item.created_at = moment(new Date(item.created)).format('YYYY-MM-DD hh:mm')
+      item.updated_at = moment(new Date(item.updated)).format('YYYY-MM-DD hh:mm')
+      return item
+    })
+    const pagination = helper.generatePagination(result.count, result.page)
+    res.render('b-article-list', {
+      activeNav: req.path,
+      pagination,
+      result
     })
   })
 
 router.route('/articleList/:id')
-  .get((req, res) => {
-    const types = [
-      '前端开发', 'Node.js', 'Java', '运维', '工具', '读书笔记', '杂谈'
-    ]
-    Article.findById(req.params.id, (err, result) => {
-      result.created_at = moment(result.created).format('YYYY-MM-DD HH:MM')
-      result.updated_at = moment(result.updated).format('YYYY-MM-DD HH:MM')
-      res.render('b-article-edit', {
-        activeNav: req.path,
-        types,
-        id: req.params.id,
-        data: result
-      })
+  .delete(async (req, res) => {
+    await Article.findOneAndDelete({ _id: req.params.id })
+    res.status(200).send({
+      msg: 'Delete successful '
     })
   })
   .put((req, res) => {
@@ -86,5 +78,19 @@ router.route('/articleList/:id')
       })
     })
   })
+  .get((req, res) => {
+    const types = [
+      '前端开发', 'Node.js', 'Java', '运维', '工具', '读书笔记', '杂谈'
+    ]
+    Article.findById(req.params.id, (err, result) => {
+      res.render('b-article-edit', {
+        activeNav: req.path,
+        types,
+        id: req.params.id,
+        data: result
+      })
+    })
+  })
+
 
 module.exports = router

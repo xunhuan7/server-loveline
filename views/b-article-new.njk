@@ -3,17 +3,19 @@
 
 <div id="new-article">
   <div class="ui form">
-    <div class="required field">
-      <label>分类</label>
-      <select v-model="tags" multiple class="ui fluid dropdown">
-        {% for item in types %}
-        <option value="{{ item }}">{{ item }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="field">
-      <label>标题</label>
-      <input type="text" v-model="title">
+    <div class="ui grid">
+      <div class="required field eight wide column">
+        <label>分类</label>
+        <select v-model="tags" multiple class="ui fluid dropdown">
+          {% for item in types %}
+          <option value="{{ item }}">{{ item }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field eight wide column">
+        <label>标题</label>
+        <input type="text" v-model="title">
+      </div>
     </div>
     <div class="field">
       <label>摘要</label>
@@ -29,7 +31,7 @@
       <label>正文</label>
       <mavon-editor v-model="content"/>
     </div>
-    <button @click="save" class="fluid ui primary button">保存</button>
+    <button @click="save" class="fluid ui primary button" :class="{loading:saving}">保存</button>
   </div>
 </div>
 
@@ -38,11 +40,14 @@
     delimiters: ['${', '}'],
     el: '#new-article',
     data: {
+      // 数据
       title: '',
       summary: '',
       online: false,
       tags: [],
       content: '',
+      // 状态
+      saving: false
     },
     mounted: function () {
       this.bindEvents()
@@ -58,16 +63,18 @@
           tags: this.tags,
           content: this.content,
         }
-        if(params.tags.length === 0){
+        if (params.tags.length === 0) {
           return alert('分类不能为空')
         }
-        if(!params.content){
+        if (!params.content) {
           return alert('正文不能为空')
         }
-
+        this.saving = true
         axios.post('/newArticle', params).then(function () {
+          this.saving = false
           window.location.href = '/articleList'
         }).catch(function (error) {
+          this.saving = false
           alert('创建失败' + error.response.data.msg)
         })
       }

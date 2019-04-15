@@ -3,17 +3,19 @@
 
 <div id="article-detail">
   <div class="ui form">
-    <div class="required field">
-      <label>分类</label>
-      <select v-model="tags" multiple class="ui fluid dropdown">
-        {% for item in types %}
-        <option value="{{ item }}">{{ item }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div class="field">
-      <label>标题</label>
-      <input type="text" v-model="title">
+    <div class="ui grid">
+      <div class="required field eight wide column">
+        <label>分类</label>
+        <select v-model="tags" multiple class="ui fluid dropdown">
+          {% for item in types %}
+          <option value="{{ item }}">{{ item }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field eight wide column">
+        <label>标题</label>
+        <input type="text" v-model="title">
+      </div>
     </div>
     <div class="field">
       <label>摘要</label>

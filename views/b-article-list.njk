@@ -2,6 +2,10 @@
 {% block wrap %}
 
 <div id="article-list">
+  <div class="ui inverted dimmer" :class="{active:isLoading}"
+       style="position: fixed;left: 0;top: 0;width: 100%;height: 100%">
+    <div class="ui text loader">正在删除......</div>
+  </div>
   <div class="write-article">
     <a class="ui circular primary icon button" href="/newArticle">
       <i class="plus icon"></i>
@@ -19,7 +23,7 @@
     </tr>
     </thead>
     <tbody>
-    {% for item in data %}
+    {% for item in result.list %}
     <tr class="{% if item.online === false %}warning{% endif %}">
       <td><img src="{{ item.thumbnail }}"/></td>
       <td class="collapsing">
@@ -45,21 +49,13 @@
         </p>
         {% endfor %}
       </td>
-      <!--<td>-->
-      <!--<mavon-editor :toolbars="toolbars"-->
-      <!--:subfield="false"-->
-      <!--:editable="false"-->
-      <!--:scrollStyle="true"-->
-      <!--defaultOpen="preview"-->
-      <!--value="{{ item.content }}"/>-->
-      <!--</td>-->
       <td>{{ item.created_at }}</td>
       <td>{{ item.updated_at }}</td>
       <td>
         <a class="circular ui compact icon button" href="/articleList/{{ item.id }}">
           <i class="blue pencil alternate icon"></i>
         </a>
-        <button class="circular ui compact icon button" data-id="{{ item.id }}">
+        <button class="circular ui compact icon button" @click="deleteArticle('{{ item.id }}')">
           <i class="red trash alternate outline icon"></i>
         </button>
       </td>
@@ -67,22 +63,58 @@
     {% endfor %}
     </tbody>
   </table>
+  <div class="center">
+    <div class="ui borderless pagination menu">
+      {% for page in pagination %}
+      <a class="item {% if result.page === page %}active{% endif %}" href="/articleList?page={{page}}&pageSize=2">
+        {{ page }}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <!-- s:删除确认模态框 -->
+  <div class="ui mini modal">
+    <div class="header">提示</div>
+    <div class="content">
+      <p>确认删除此篇文章？</p>
+    </div>
+    <div class="actions">
+      <button class="mini ui cancel button">取消</button>
+      <button class="mini ui primary approve button">确认</button>
+    </div>
+  </div>
+  <!-- e:删除确认模态框 -->
 </div>
 
 <script>
   new Vue({
     el: '#article-list',
-    computed: {
-      toolbars() {
-        return { preview: true, subfield: false }
-      }
-    },
     mounted() {
       this.bindEvents()
+    },
+    data() {
+      return {
+        isLoading: false
+      }
     },
     methods: {
       bindEvents() {
         $('.ui.dropdown').dropdown({ clearable: true })
+      },
+      deleteArticle(id) {
+        $('.modal').modal({
+          blurring: true,
+          onApprove: () => {
+            this.isLoading = true
+            axios.delete('/articleList/' + id).then(res => {
+              this.isLoading = false
+              window.location.reload()
+            }).catch(e => {
+              this.isLoading = false
+              alert('失败')
+            })
+          }
+        }).modal('show')
       }
     }
   })

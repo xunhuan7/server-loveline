@@ -2,7 +2,7 @@
 {% block content %}
 
 <!-- s:顶部导航栏 -->
-<div id="header">
+<div id="header" class="ui container">
   <div class="ui secondary pointing menu">
     <a class="item {% if activeNav.indexOf('articleList') > -1 %}active{% endif %}" href="/articleList">
       <i class="list ul icon"></i>文章列表
@@ -37,7 +37,7 @@
 <!-- e:顶部导航栏 -->
 
 <!-- s:内容区 -->
-<div style="padding: 1em">
+<div style="padding: 1em" class="ui container">
   {% block wrap %}{% endblock %}
 </div>
 <!-- e:内容区 -->
